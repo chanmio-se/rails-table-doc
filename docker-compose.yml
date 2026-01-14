@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - bundle-cache:/usr/local/bundle
+    working_dir: /usr/src/app
+    command: bash
+    tty: true
+    environment:
+      - BUNDLE_PATH=/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  bundle-cache:
+  db_data:
